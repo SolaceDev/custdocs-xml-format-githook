@@ -1,0 +1,14 @@
+- id: format-xmllint
+  name: Formats XML, HTML, and HTM files
+  description: Format XML, HTML, and HTM files to match xmllint --format option
+  entry: check-xmllint
+  args: [-i]
+  language: script
+  files: \.(xml|html|htm)$
+
+- id: check-xmllint
+  name: Check XML, HTML, and HTM files formatting
+  description: Check that XML, HTML, and HTM files format matches xmllint --format option
+  entry: check-xmllint
+  language: script
+  files: \.(xml|html|htm)$
