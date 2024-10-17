@@ -1,25 +1,30 @@
-#!/bin/sh
+#!/bin/bash
 
+# Define xmllint command
 XMLLINT=xmllint
 
+# Check if stdout is a terminal, set colors if true
 if [ -t 1 ]; then
-  R=$(tput setaf 1)
-  G=$(tput setaf 2)
-  Y=$(tput setaf 3)
-  N=$(tput sgr0)
+  R=$(tput setaf 1) # Red
+  G=$(tput setaf 2) # Green
+  Y=$(tput setaf 3) # Yellow
+  N=$(tput sgr0)    # Reset colors
 fi
 
-args=$(getopt i $*)
+# Parse arguments using getopt
+args=$(getopt i "$@")
 if [ $? -ne 0 ]; then
   echo "Usage: check-xmllint [-i] <files..>
   -i overwrite files with xmllint formatted content
-"
+  "
   exit 2
 fi
 set -- $args
 
+# Initialize inplace flag
 inplace=0
 
+# Handle command-line options
 while true; do
   case "$1" in
     -i)
@@ -33,29 +38,36 @@ while true; do
   shift
 done
 
+# Initialize return value
 retval=0
 
-for FILE in $*; do
+# Process each file passed as argument
+for FILE in "$@"; do
   tmpfile=$(mktemp)
-  if ! $XMLLINT --format $FILE > $tmpfile; then
-      echo "XML check for $FILE: ${R}cannot parse${N}"
-      retval=1
+  
+  # Format XML file using xmllint and check for errors
+  if ! $XMLLINT --format "$FILE" > "$tmpfile"; then
+    echo "XML check for $FILE: ${R}cannot parse${N}"
+    retval=1
   else
-    if ! diff $tmpfile $FILE; then
+    # Compare the formatted output with the original file
+    if ! diff "$tmpfile" "$FILE" > /dev/null; then
       if [ $inplace -eq 0 ]; then
         echo "XML check for $FILE: ${R}failed${N}"
         retval=2
       else
-        tmpfile=$(mktemp)
-        $XMLLINT --format $FILE > $tmpfile
-        cp $tmpfile $FILE
+        # Overwrite original file with formatted output
+        cp "$tmpfile" "$FILE"
         echo "XML check for $FILE: ${Y}reformatted${N}"
       fi
     else
       echo "XML check for $FILE: ${G}OK${N}"
     fi
   fi
-  rm -f $tmpfile
+  
+  # Clean up temporary file
+  rm -f "$tmpfile"
 done
 
+# Exit with the appropriate status
 exit $retval
