@@ -2,6 +2,8 @@
 # How to Set Up the `xmllint` Pre-Commit Hook
 
 This guide explains how to set up a pre-commit hook to automatically format `.xml`, `.html`, and `.htm` files using the `xmllint` tool. Pre-commit hooks ensure files are formatted correctly before being committed to version control, maintaining consistency across your repository.
+NOTE: The script has been modified to work with only GitBash in 2.0.2
+IF you need the script to work with other versions, you might need to try 2.0.0/2.0.1 (bash - depending on where it is),or sh (version 1.0.1).
 
 ## What is `xmllint`?
 `xmllint` is a command-line tool for validating and formatting XML files. It ensures files are formatted correctly according to standard XML conventions. In this guide, we'll integrate `xmllint` into a pre-commit hook to automatically format `.xml`, `.html`, and `.htm` files.
